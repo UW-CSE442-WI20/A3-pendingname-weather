@@ -35,7 +35,7 @@ svg
 
 // Y scale and Axis
 var y = d3.scaleLinear()
-    .domain([0, 100])         // todo: change domain to be > total spending
+    .domain([0, 1000])         // todo: change domain to be > total spending
     .range([height, 0]);       // This is the corresponding value I want in Pixel
 svg
   .append('g')
@@ -51,15 +51,19 @@ svg
 //     .attr("cy", function(d){ return y(d.y) })
 //     .attr("r", 7)
 
-// var csvFile = require();
-d3.csv("./federal_spending_2020_2024.csv").then(function(data) {
-    svg.selectAll(".dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("x", function(d) { return x(data.Year); })
-        // .attr("width", x.bandwidth())
-        .attr("y", function(d) { return y(data.GDP); })
+const csvFile = require('./data/federal_spending_2020_2024.csv');
+d3.csv(csvFile).then(function(theData) {
+	//console.log(theData[0]);
+    var circles = svg.selectAll(".dot")
+        .data(theData)
+        .enter()
+		.append("circle")
         // .on("mouseover", tip.show)
         // .on("mouseout", tip.hide);
+	var circlesAttr = circles
+	    .attr("class", "dot")
+        .attr("cx", function(d) {  return x(d.Year); })
+        // .attr("width", x.bandwidth())
+        .attr("cy", function(d) {console.log(y(d.GDP)); return y(d.Pensions); })
+		.attr("r", 5)
 });
