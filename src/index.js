@@ -6,9 +6,9 @@ console.log('hello world')
 // stolen from https://www.d3-graph-gallery.com/intro_d3js.html
 
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 40, bottom: 30, left: 30},
-    width = 1000 - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+var margin = {top: 20, right: 60, bottom: 30, left: 30},
+    width = 800 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
 
 var d3 = require("d3");
 
@@ -43,7 +43,7 @@ d3.csv(csvFile).then(function(theData) {
     .entries(theData);
 
 var x = d3.scaleLinear()
-    .domain([2000, 2020])         // This is the min and the max of the data: 0 to 100 if percentages
+    .domain([2000, 2024])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
 svg
   .append('g')
