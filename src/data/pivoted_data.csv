@@ -1,0 +1,251 @@
+Year,Category,Spending
+2000,Defense,358.57
+2001,Defense,366.19
+2002,Defense,421.7
+2003,Defense,482.92
+2004,Defense,542.43
+2005,Defense,599.98
+2006,Defense,621.13
+2007,Defense,652.56
+2008,Defense,729.58
+2009,Defense,793.97
+2010,Defense,847.06
+2011,Defense,878.43
+2012,Defense,839.25
+2013,Defense,818.85
+2014,Defense,799.95
+2015,Defense,801.44
+2016,Defense,813.19
+2017,Defense,821.57
+2018,Defense,858.99
+2019,Defense,890.08
+2020,Defense,1008.53
+2021,Defense,1046.48
+2022,Defense,1072.56
+2023,Defense,1076.04
+2024,Defense,1079.8
+2000,Education,59.93
+2001,Education,63.61
+2002,Education,77.83
+2003,Education,90.54
+2004,Education,96.37
+2005,Education,106.37
+2006,Education,127.58
+2007,Education,100.81
+2008,Education,100.86
+2009,Education,89.77
+2010,Education,140.33
+2011,Education,113.67
+2012,Education,103.28
+2013,Education,85.29
+2014,Education,102.63
+2015,Education,133.78
+2016,Education,121.69
+2017,Education,156.3
+2018,Education,107.94
+2019,Education,147.98
+2020,Education,125.78
+2021,Education,115.6
+2022,Education,113.55
+2023,Education,109.06
+2024,Education,106.5
+2000,General Government,28.07
+2001,General Government,29.57
+2002,General Government,32.67
+2003,General Government,39.92
+2004,General Government,45.1
+2005,General Government,35.1
+2006,General Government,35.46
+2007,General Government,36.23
+2008,General Government,37.65
+2009,General Government,41.02
+2010,General Government,44.08
+2011,General Government,48.66
+2012,General Government,50.59
+2013,General Government,48.97
+2014,General Government,44.39
+2015,General Government,43.66
+2016,General Government,47.12
+2017,General Government,48.51
+2018,General Government,47.99
+2019,General Government,48.28
+2020,General Government,58.68
+2021,General Government,56.32
+2022,General Government,55.86
+2023,General Government,55.55
+2024,General Government,55.64
+2000,Health Care,351.62
+2001,Health Care,389.62
+2002,Health Care,427.35
+2003,Health Care,468.97
+2004,Health Care,509.48
+2005,Health Care,549.19
+2006,Health Care,582.61
+2007,Health Care,641.79
+2008,Health Care,671.36
+2009,Health Care,764.43
+2010,Health Care,820.7
+2011,Health Care,858.16
+2012,Health Care,818.54
+2013,Health Care,856.14
+2014,Health Care,921.14
+2015,Health Care,1028.43
+2016,Health Care,1105.83
+2017,Health Care,1130.44
+2018,Health Care,1139.92
+2019,Health Care,1235.96
+2020,Health Care,1301.18
+2021,Health Care,1371.39
+2022,Health Care,1442.7
+2023,Health Care,1481.57
+2024,Health Care,1512.76
+2000,Interest,222.95
+2001,Interest,206.17
+2002,Interest,170.95
+2003,Interest,153.07
+2004,Interest,160.25
+2005,Interest,183.99
+2006,Interest,226.6
+2007,Interest,237.11
+2008,Interest,252.76
+2009,Interest,186.9
+2010,Interest,196.19
+2011,Interest,229.96
+2012,Interest,220.41
+2013,Interest,220.89
+2014,Interest,228.96
+2015,Interest,223.18
+2016,Interest,240.03
+2017,Interest,262.55
+2018,Interest,324.98
+2019,Interest,375.61
+2020,Interest,478.81
+2021,Interest,547.5
+2022,Interest,609.88
+2023,Interest,663.69
+2024,Interest,701.69
+2000,Other Spending,79.84
+2001,Other Spending,72.56
+2002,Other Spending,72.08
+2003,Other Spending,77.12
+2004,Other Spending,75.53
+2005,Other Spending,94.45
+2006,Other Spending,126.17
+2007,Other Spending,71.03
+2008,Other Spending,99.33
+2009,Other Spending,377.18
+2010,Other Spending,29.79
+2011,Other Spending,96.39
+2012,Other Spending,135.05
+2013,Other Spending,30.28
+2014,Other Spending,-0.37
+2015,Other Spending,22.36
+2016,Other Spending,50.17
+2017,Other Spending,68.52
+2018,Other Spending,102.56
+2019,Other Spending,96
+2020,Other Spending,108.66
+2021,Other Spending,68.35
+2022,Other Spending,66
+2023,Other Spending,53.65
+2024,Other Spending,28.69
+2000,Pensions,453.91
+2001,Pensions,480.9
+2002,Pensions,502.72
+2003,Pensions,517.53
+2004,Pensions,537.42
+2005,Pensions,564.71
+2006,Pensions,590.58
+2007,Pensions,636.12
+2008,Pensions,668.75
+2009,Pensions,738.64
+2010,Pensions,756.13
+2011,Pensions,782.28
+2012,Pensions,819.5
+2013,Pensions,870.94
+2014,Pensions,914.57
+2015,Pensions,953.6
+2016,Pensions,980.57
+2017,Pensions,1006.64
+2018,Pensions,1047.42
+2019,Pensions,1107.71
+2020,Pensions,1163.58
+2021,Pensions,1236.24
+2022,Pensions,1313.95
+2023,Pensions,1386.79
+2024,Pensions,1462.97
+2000,Protection,15.83
+2001,Protection,16.75
+2002,Protection,20.15
+2003,Protection,20.33
+2004,Protection,23.88
+2005,Protection,24.76
+2006,Protection,25.09
+2007,Protection,25.91
+2008,Protection,31.23
+2009,Protection,34.59
+2010,Protection,35.04
+2011,Protection,36.35
+2012,Protection,35.73
+2013,Protection,34.06
+2014,Protection,32.86
+2015,Protection,33.99
+2016,Protection,35.84
+2017,Protection,36.8
+2018,Protection,38.15
+2019,Protection,38.25
+2020,Protection,43.57
+2021,Protection,47.83
+2022,Protection,50.16
+2023,Protection,52.14
+2024,Protection,53.6
+2000,Transportation,46.85
+2001,Transportation,54.45
+2002,Transportation,61.83
+2003,Transportation,67.07
+2004,Transportation,64.63
+2005,Transportation,67.89
+2006,Transportation,70.24
+2007,Transportation,72.91
+2008,Transportation,77.62
+2009,Transportation,84.29
+2010,Transportation,91.97
+2011,Transportation,92.97
+2012,Transportation,93.02
+2013,Transportation,91.67
+2014,Transportation,91.92
+2015,Transportation,89.53
+2016,Transportation,92.57
+2017,Transportation,93.55
+2018,Transportation,92.79
+2019,Transportation,96.22
+2020,Transportation,100.89
+2021,Transportation,100.22
+2022,Transportation,87.38
+2023,Transportation,83.44
+2024,Transportation,82.82
+2000,Welfare,171.38
+2001,Welfare,183.04
+2002,Welfare,223.62
+2003,Welfare,242.43
+2004,Welfare,237.76
+2005,Welfare,245.52
+2006,Welfare,249.59
+2007,Welfare,254.23
+2008,Welfare,313.42
+2009,Welfare,406.89
+2010,Welfare,495.78
+2011,Welfare,466.21
+2012,Welfare,411.2
+2013,Welfare,397.8
+2014,Welfare,370.26
+2015,Welfare,361.87
+2016,Welfare,365.61
+2017,Welfare,356.75
+2018,Welfare,348.31
+2019,Welfare,365.95
+2020,Welfare,355.89
+2021,Welfare,355.27
+2022,Welfare,365.42
+2023,Welfare,368.16
+2024,Welfare,368.51

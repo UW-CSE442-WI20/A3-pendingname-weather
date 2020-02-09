@@ -25,21 +25,6 @@ var svg = d3.select("#display")
 // var data = [ {x:2010, y:10}, {x:2012, y:20}, {x:2005, y:20} ]
 //
 // X scale and Axis
-var x = d3.scaleLinear()
-    .domain([2000, 2020])         // This is the min and the max of the data: 0 to 100 if percentages
-    .range([0, width]);       // This is the corresponding value I want in Pixel
-svg
-  .append('g')
-  .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x).tickFormat(d3.format("d")));
-
-// Y scale and Axis
-var y = d3.scaleLinear()
-    .domain([0, 100])         // todo: change domain to be > total spending
-    .range([height, 0]);       // This is the corresponding value I want in Pixel
-svg
-  .append('g')
-  .call(d3.axisLeft(y));
 //
 // // Add 3 dots for 0, 50 and 100%
 // svG
@@ -51,16 +36,44 @@ svg
 //     .attr("cy", function(d){ return y(d.y) })
 //     .attr("r", 7)
 
-// var csvFile = require();
-d3.csv("./federal_spending_2020_2024.csv").then(function(data) {
-    // svg.selectAll(".dot")
-    //     .data(data)
-    //     .enter().append("circle")
-    //     .attr("class", "dot")
-    //     .attr("x", function(d) { return x(data.Year); })
-    //     // .attr("width", x.bandwidth())
-    //     .attr("y", function(d) { return y(data.GDP); })
-    //     // .on("mouseover", tip.show)
-    //     // .on("mouseout", tip.hide);
-    console.log(data);
+const csvFile = require('./data/pivoted_data.csv');
+d3.csv(csvFile).then(function(theData) {
+  var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
+    .key(function(d) { return d.Category;})
+    .entries(theData);
+
+var x = d3.scaleLinear()
+    .domain([2000, 2020])         // This is the min and the max of the data: 0 to 100 if percentages
+    .range([0, width]);       // This is the corresponding value I want in Pixel
+svg
+  .append('g')
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+
+// Y scale and Axis
+var y = d3.scaleLinear()
+    .domain([0, 1000])         // todo: change domain to be > total spending
+    .range([height, 0]);       // This is the corresponding value I want in Pixel
+svg
+  .append('g')
+  .call(d3.axisLeft(y));
+
+var res = sumstat.map(function(d){ return d.key }) // list of group names
+  var color = d3.scaleOrdinal()
+    .domain(res)
+    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#f7c82d','#a65628','#f781bf','#999999', '#4287f5'])
+
+svg.selectAll(".line")
+      .data(sumstat)
+      .enter()
+      .append("path")
+        .attr("fill", "none")
+        .attr("stroke", function(d){ return color(d.key) })
+        .attr("stroke-width", 1.5)
+        .attr("d", function(d){
+          return d3.line()
+            .x(function(d) { return x(d.Year); })
+            .y(function(d) { return y(d.Spending); })
+            (d.values)
+            })
 });
