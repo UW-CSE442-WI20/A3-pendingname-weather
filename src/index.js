@@ -9,6 +9,8 @@ console.log('hello world')
 var margin = {top: 10, right: 40, bottom: 30, left: 30},
     width = 1000 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom;
+	
+var d3 = require("d3");
 
 // append the svg object to the body of the page
 var svG = d3.select("#display")
