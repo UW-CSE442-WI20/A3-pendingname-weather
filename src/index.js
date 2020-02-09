@@ -67,7 +67,7 @@ svg.selectAll(".line")
       .data(sumstat)
       .enter()
       .append("path")
-        .attr("fill", function(d){ return color(d.key) })
+        .attr("fill", "none")
         .attr("stroke", function(d){ return color(d.key) })
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
