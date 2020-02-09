@@ -43,7 +43,7 @@ d3.csv(csvFile).then(function(theData) {
     .entries(theData);
 
 var x = d3.scaleLinear()
-    .domain([1999, 2020])         // This is the min and the max of the data: 0 to 100 if percentages
+    .domain([2000, 2024])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
 svg
   .append('g')
