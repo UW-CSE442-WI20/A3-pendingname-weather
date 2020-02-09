@@ -13,7 +13,7 @@ var margin = {top: 10, right: 40, bottom: 30, left: 30},
 var d3 = require("d3");
 
 // append the svg object to the body of the page
-var svG = d3.select("#display")
+var svg = d3.select("#display")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -28,7 +28,7 @@ var data = [ {x:2010, y:10}, {x:2012, y:20}, {x:2005, y:20} ]
 var x = d3.scaleLinear()
     .domain([2000, 2020])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
-svG
+svg
   .append('g')
   .attr("transform", "translate(0," + height + ")")
   .call(d3.axisBottom(x).tickFormat(d3.format("d")));
@@ -37,12 +37,12 @@ svG
 var y = d3.scaleLinear()
     .domain([0, 100])         // todo: change domain to be > total spending
     .range([height, 0]);       // This is the corresponding value I want in Pixel
-svG
+svg
   .append('g')
   .call(d3.axisLeft(y));
 
 // Add 3 dots for 0, 50 and 100%
-svG
+svg
   .selectAll("whatever")
   .data(data)
   .enter()
