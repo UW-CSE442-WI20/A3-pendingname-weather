@@ -53,13 +53,14 @@ svg
 
 // var csvFile = require();
 d3.csv("./federal_spending_2020_2024.csv").then(function(data) {
-    svg.selectAll(".dot")
-        .data(data)
-        .enter().append("circle")
-        .attr("class", "dot")
-        .attr("x", function(d) { return x(data.Year); })
-        // .attr("width", x.bandwidth())
-        .attr("y", function(d) { return y(data.GDP); })
-        // .on("mouseover", tip.show)
-        // .on("mouseout", tip.hide);
+    // svg.selectAll(".dot")
+    //     .data(data)
+    //     .enter().append("circle")
+    //     .attr("class", "dot")
+    //     .attr("x", function(d) { return x(data.Year); })
+    //     // .attr("width", x.bandwidth())
+    //     .attr("y", function(d) { return y(data.GDP); })
+    //     // .on("mouseover", tip.show)
+    //     // .on("mouseout", tip.hide);
+    console.log(data);
 });
