@@ -7,8 +7,8 @@ console.log('hello world')
 
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 40, bottom: 30, left: 30},
-    width = 450 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 1000 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 var svG = d3.select("#display")
@@ -19,21 +19,21 @@ var svG = d3.select("#display")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-// Create data
-var data = [ {x:10, y:20}, {x:40, y:90}, {x:80, y:50} ]
+// todo: load proper data
+var data = [ {x:2010, y:10}, {x:2012, y:20}, {x:2005, y:20} ]
 
 // X scale and Axis
 var x = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+    .domain([2000, 2020])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
 svG
   .append('g')
   .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x));
+  .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
-// X scale and Axis
+// Y scale and Axis
 var y = d3.scaleLinear()
-    .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+    .domain([0, 100])         // todo: change domain to be > total spending
     .range([height, 0]);       // This is the corresponding value I want in Pixel
 svG
   .append('g')
