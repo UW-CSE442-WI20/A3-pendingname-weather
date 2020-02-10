@@ -6,9 +6,13 @@ console.log('hello world')
 // stolen from https://www.d3-graph-gallery.com/intro_d3js.html
 
 // set the dimensions and margins of the graph
-var margin = {top: 20, right: 60, bottom: 30, left: 30},
+var margin = {top: 20, right: 60, bottom: 50, left: 50},
     width = 800 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
+
+var margin2 = {top: 20, right: 10, bottom: 50, left: 100},
+    width2 = 800 - margin2.left - margin2.right,
+    height2 = 600 - margin2.top - margin2.bottom;
 
 var d3 = require("d3");
 
@@ -20,6 +24,14 @@ var svg = d3.select("#display")
   .append("g")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+
+// var svg2 = d3.select("#display")
+//   .append("svg2")
+//     .attr("width", width2 + margin2.left + margin2.right)
+//     .attr("height", height2 + margin2.top + margin2.bottom)
+//   .append("g")
+//     .attr("transform",
+//           "translate(" + margin2.left + "," + margin2.top + ")");
 
 // // todo: load proper data
 // var data = [ {x:2010, y:10}, {x:2012, y:20}, {x:2005, y:20} ]
@@ -38,6 +50,7 @@ var svg = d3.select("#display")
 
 const csvFile = require('./data/pivoted_data.csv');
 d3.csv(csvFile).then(function(theData) {
+
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
     .key(function(d) { return d.Category;})
     .entries(theData);
@@ -77,3 +90,39 @@ svg.selectAll(".line")
             (d.values)
             })
 });
+
+// ############################################################################
+// ############################################################################
+// ############################################################################
+// ############################################################################
+//
+// const secondFile = require('./data/federal_spending_2020_2024.csv');
+// d3.csv(secondFile).then(function(data) {
+// var x = d3.scaleLinear()
+//     .domain([2000, 2024])         // This is the min and the max of the data: 0 to 100 if percentages
+//     .range([0, width2]);
+//
+// svg
+//   .append('g')
+//   .attr("transform", "translate(0," + height2 + ")")
+//   .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+//
+// var y = d3.scaleLinear()
+//     .domain([0, 1000])         // todo: change domain to be > total spending
+//     .range([height2, 0]);
+//
+// svg
+//   .append('g')
+//   .call(d3.axisLeft(y));
+//
+// svg.append("path")
+//       .datum(data)
+//       .attr("fill", "#cce5df")
+//       .attr("stroke", "#69b3a2")
+//       .attr("stroke-width", 1.5)
+//       .attr("d", d3.area()
+//         .x(function(d) { return x(d.Year) })
+//         .y0(y(0))
+//         .y1(function(d) { return y(d.Pensions) })
+//       )
+// });
