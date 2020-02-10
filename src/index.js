@@ -20,7 +20,7 @@ d3.csv(csvFile).then(function(theData) {
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
     .key(function(d) { return d.Year;})
     .entries(theData);
-	
+
   var categories = ["Defense", "Education", "General Government", "Health Care", "Interest", "Other Spending", "Pensions", "Protection", "Transportation", "Welfare"];
   var category = [0,1,2,3,4,5,6,7,8,9];
   var stackedData = d3.stack()
@@ -29,7 +29,7 @@ d3.csv(csvFile).then(function(theData) {
 	  return d.values[key].Spending;
 	})
 	(sumstat)
-	
+
   var x = d3.scaleLinear()
     .domain([2000, 2024])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
@@ -47,21 +47,23 @@ d3.csv(csvFile).then(function(theData) {
     .call(d3.axisLeft(y));
 	
   function handleMouseOver(d, i) {  // Add interactivity
+    tooltip.style("display", null);
 	d3.select(this).transition()
                .duration('50')
                .attr('opacity', '.85');
   }
   
   function handleMouseOut(d, i) {
+	  tooltip.style("display", "none");
 	d3.select(this).transition()
                .duration('50')
                .attr('opacity', '1');
   }
   
   function handleMouseMove(d, i) {
-	      const currentXPosition = d3.mouse(this)[0];
+    const currentXPosition = d3.mouse(this)[0];
 	const currentYPosition = d3.mouse(this)[1];
-	
+
     const xValue = x.invert(currentXPosition);
     const yValue = y.invert(currentYPosition);
 	
@@ -70,6 +72,11 @@ d3.csv(csvFile).then(function(theData) {
 	//console.log(year + ", " + yValue);
 	//console.log(stackedData[year.toString()]);
 	  console.log(categories[i]);
+	console.log(xValue + ", " + yValue);
+	        var xPos = d3.mouse(this)[0] - 15;
+        var yPos = d3.mouse(this)[1] - 55;
+        tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+        tooltip.select("text").text(categories[i]);
   }
 
   var res = sumstat.map(function(d){ return d.key }) // list of group names
@@ -80,7 +87,7 @@ d3.csv(csvFile).then(function(theData) {
   var lineColor = d3.scaleOrdinal()
     .domain(res)
 	.range(["#3a5a7d","#ca6a0c","#c62325","#4d938e","#42783b","#d3a914","#8b537c","#ff364a","#755747","#918179"])
-	
+
   var area = d3.area()
         .x(function(d, i) { return x(d.data.key); })
         .y0(function(d) { return y(d[0]); })
@@ -97,5 +104,14 @@ d3.csv(csvFile).then(function(theData) {
       .attr("d", area)
 	.on("mouseover", handleMouseOver)
 	.on("mouseout", handleMouseOut)
-	.on("mousemove", handleMouseMove);
+	.on("mousemove", handleMouseMove)
+
+    var tooltip = svg.append("g")
+      .attr("class", tooltip)
+      .style("display", "none");
+    tooltip.append("text")
+      .attr("x", 15)
+      .attr("dy", "1.2em")
+      .style("font_size", "1.25em")
+      .attr("font-weight", "bold");
 });
