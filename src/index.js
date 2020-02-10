@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 var margin = {
         top: 20,
-        right: 60,
+        right: 200,
         bottom: 30,
         left: 60
     },
@@ -136,4 +136,27 @@ d3.csv(csvFile).then(function(theData) {
         .attr("dy", "1.2em")
         .style("font_size", "1.25em")
         .attr("font-weight", "bold");
+
+var size = 20
+svg.selectAll(".line")
+  .data(categories)
+  .enter()
+  .append("rect")
+    .attr("x", 600)
+    .attr("y", function(d,i){ return 225 - i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d){ return color(d)})
+
+// Add one dot in the legend for each name.
+svg.selectAll("mylabels")
+  .data(categories)
+  .enter()
+  .append("text")
+    .attr("x", 600 + size*1.2)
+    .attr("y", function(d,i){ return 225 - i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .style("fill", function(d){ return color(d)})
+    .text(function(d){ return d})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
 });
