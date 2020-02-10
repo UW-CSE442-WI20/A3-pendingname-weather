@@ -1,8 +1,8 @@
 // set the dimensions and margins of the graph
 var margin = {
-        top: 20,
-        right: 200,
-        bottom: 30,
+        top: 60,
+        right: 60,
+        bottom: 100,
         left: 60
     },
     width = 800 - margin.left - margin.right,
@@ -52,6 +52,23 @@ d3.csv(csvFile).then(function(theData) {
     svg
         .append('g')
         .call(d3.axisLeft(y));
+
+    // text label for the x axis
+    svg.append("text")
+        .attr("transform",
+            "translate(" + (width / 2) + " ," +
+            (height + margin.top + 20) + ")")
+        .style("text-anchor", "middle")
+        .text("Year");
+
+    // text label for the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Billions of USD");
 
     function handleMouseOver(d, i) { // Add interactivity
         tooltip.style("display", null);
