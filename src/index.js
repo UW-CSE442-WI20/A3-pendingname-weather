@@ -36,8 +36,7 @@ d3.csv(csvFile).then(function(theData) {
             return d.values[key].Spending;
         })
         (sumstat)
-
-    var x = d3.scaleLinear()
+	var x = d3.scaleLinear()
         .domain([2000, 2024]) // This is the min and the max of the data: 0 to 100 if percentages
         .range([0, width]); // This is the corresponding value I want in Pixel
     svg
@@ -47,7 +46,7 @@ d3.csv(csvFile).then(function(theData) {
 
     // Y scale and Axis
     var y = d3.scaleLinear()
-        .domain([0, 6000])
+        .domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
         .range([height, 0]); // This is the corresponding value I want in Pixel
     svg
         .append('g')
@@ -92,11 +91,6 @@ d3.csv(csvFile).then(function(theData) {
         const yValue = y.invert(currentYPosition);
 
         var year = Math.round(xValue);
-
-        //console.log(year + ", " + yValue);
-        //console.log(stackedData[year.toString()]);
-        console.log(categories[i]);
-        console.log(xValue + ", " + yValue);
         var xPos = d3.mouse(this)[0] - 15;
         var yPos = d3.mouse(this)[1] - 55;
         tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
