@@ -36,7 +36,7 @@ d3.csv(csvFile).then(function(theData) {
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
     .key(function(d) { return d.Year;})
     .entries(theData);
-	
+
   var categories = ["Defense", "Education", "General Government", "Health Care", "Interest", "Other Spending", "Pensions", "Protection", "Transportation", "Welfare"];
   var category = [0,1,2,3,4,5,6,7,8,9];
   var stackedData = d3.stack()
@@ -45,7 +45,7 @@ d3.csv(csvFile).then(function(theData) {
 	  return d.values[key].Spending;
 	})
 	(sumstat)
-	
+
   var x = d3.scaleLinear()
     .domain([2000, 2024])         // This is the min and the max of the data: 0 to 100 if percentages
     .range([0, width]);       // This is the corresponding value I want in Pixel
@@ -61,14 +61,14 @@ d3.csv(csvFile).then(function(theData) {
   svg
     .append('g')
     .call(d3.axisLeft(y));
-	
+
   function handleMouseMove(d, i) {  // Add interactivity
     const currentXPosition = d3.mouse(this)[0];
 	const currentYPosition = d3.mouse(this)[1];
-	
+
     const xValue = x.invert(currentXPosition);
     const yValue = y.invert(currentYPosition);
-	
+
 	console.log(xValue + ", " + yValue);
     //const bisectDate = d3.bisector(dataPoint => dataPoint.year).left;
     // Get the index of the xValue relative to the dataSet
@@ -79,7 +79,7 @@ d3.csv(csvFile).then(function(theData) {
   var color = d3.scaleOrdinal()
     .domain(res)
     .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#f7c82d','#a65628','#f781bf','#999999', '#4287f5'])
-	
+
   var area = d3.area()
         .x(function(d, i) { return x(d.data.key); })
         .y0(function(d) { return y(d[0]); })
@@ -90,10 +90,32 @@ d3.csv(csvFile).then(function(theData) {
     .enter()
     .append("path")
 	  .style("fill", function(d) { name = categories[d.key]; return color(name); })
-	  
+
       //.attr("fill", function(d) { return color(d.key) })
       .attr("stroke", function(d){ return color(d.key) }) // todo: have different color for line
       .attr("stroke-width", 1.5)
       .attr("d", area)
-	.on("mousemove", handleMouseMove);
+	// .on("mousemove", handleMouseMove);
+  .on("mouseover", function() {
+        tooltip.style("display", null);
+      })
+      .on("mouseout", function() {
+        tooltip.style("display", "none");
+      })
+      .on("mousemove", function(d) {
+        var xPos = d3.mouse(this)[0] - 15;
+        var yPos = d3.mouse(this)[1] - 55;
+        tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+        tooltip.select("text").text(d.Category + " : " + d.Year);
+        console.log(d.Category);
+      });
+
+    var tooltip = svg.append("g")
+      .attr("class", tooltip)
+      .style("display", "none");
+    tooltip.append("text")
+      .attr("x", 15)
+      .attr("dy", "1.2em")
+      .style("font_size", "1.25em")
+      .attr("font-weight", "bold");
 });
