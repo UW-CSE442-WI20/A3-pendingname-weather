@@ -1,11 +1,11 @@
 // set the dimensions and margins of the graph
 var margin = {
         top: 60,
-        right: 60,
+        right: 350,
         bottom: 100,
         left: 60
     },
-    width = 800 - margin.left - margin.right,
+    width = 1000 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
 var d3 = require("d3");
@@ -46,7 +46,8 @@ d3.csv(csvFile).then(function(theData) {
 
     // Y scale and Axis
     var y = d3.scaleLinear()
-        .domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
+        //.domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
+		.domain([0, 6000])
         .range([height, 0]); // This is the corresponding value I want in Pixel
     svg
         .append('g')
@@ -56,7 +57,7 @@ d3.csv(csvFile).then(function(theData) {
     svg.append("text")
         .attr("transform",
             "translate(" + (width / 2) + " ," +
-            (height + margin.top + 20) + ")")
+            (height + margin.top) + ")")
         .style("text-anchor", "middle")
         .text("Year");
 
