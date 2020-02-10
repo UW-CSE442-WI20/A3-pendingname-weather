@@ -29,6 +29,8 @@ var svg = d3.select("#display")
 //     .attr("cy", function(d){ return y(d.y) })
 //     .attr("r", 7)
 
+
+
 const csvFile = require('./data/pivoted_data.csv');
 d3.csv(csvFile).then(function(theData) {
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
@@ -40,7 +42,6 @@ d3.csv(csvFile).then(function(theData) {
   var stackedData = d3.stack()
     .keys(category)
 	.value(function(d, key) {
-		console.log(d.values[key]);
 	  return d.values[key].Spending;
 	})
 	(sumstat)
@@ -60,11 +61,29 @@ d3.csv(csvFile).then(function(theData) {
   svg
     .append('g')
     .call(d3.axisLeft(y));
+	
+  function handleMouseMove(d, i) {  // Add interactivity
+    const currentXPosition = d3.mouse(this)[0];
+	const currentYPosition = d3.mouse(this)[1];
+	
+    const xValue = x.invert(currentXPosition);
+    const yValue = y.invert(currentYPosition);
+	
+	console.log(xValue + ", " + yValue);
+    //const bisectDate = d3.bisector(dataPoint => dataPoint.year).left;
+    // Get the index of the xValue relative to the dataSet
+    //const dataIndex = bisectDate(data, xValue, 1);
+  }
 
   var res = sumstat.map(function(d){ return d.key }) // list of group names
   var color = d3.scaleOrdinal()
     .domain(res)
     .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#f7c82d','#a65628','#f781bf','#999999', '#4287f5'])
+	
+  var area = d3.area()
+        .x(function(d, i) { return x(d.data.key); })
+        .y0(function(d) { return y(d[0]); })
+        .y1(function(d) { return y(d[1]); });
 
   svg.selectAll(".line")
     .data(stackedData)
@@ -75,9 +94,6 @@ d3.csv(csvFile).then(function(theData) {
       //.attr("fill", function(d) { return color(d.key) })
       .attr("stroke", function(d){ return color(d.key) }) // todo: have different color for line
       .attr("stroke-width", 1.5)
-      .attr("d", d3.area()
-        .x(function(d, i) { return x(d.data.key); })
-        .y0(function(d) { return y(d[0]); })
-        .y1(function(d) { return y(d[1]); })
-      )
+      .attr("d", area)
+	.on("mousemove", handleMouseMove);
 });
