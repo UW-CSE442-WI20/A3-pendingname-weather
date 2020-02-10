@@ -32,14 +32,15 @@ var svg = d3.select("#display")
 const csvFile = require('./data/pivoted_data.csv');
 d3.csv(csvFile).then(function(theData) {
   var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
-    .key(function(d) { return d.Category;})
+    .key(function(d) { return d.Year;})
     .entries(theData);
 	
   var categories = ["Defense", "Education", "General Government", "Health Care", "Interest", "Other Spending", "Pensions", "Protection", "Transportation", "Welfare"];
-  var category = [1,2,3,4,5,6,7,8,9,10];
+  var category = [0,1,2,3,4,5,6,7,8,9];
   var stackedData = d3.stack()
     .keys(category)
 	.value(function(d, key) {
+		console.log(d.values[key]);
 	  return d.values[key].Spending;
 	})
 	(sumstat)
@@ -54,7 +55,7 @@ d3.csv(csvFile).then(function(theData) {
 
 // Y scale and Axis
   var y = d3.scaleLinear()
-    .domain([0, d3.max(theData, function(d) { return +d.Spending; })*1.1])         // todo: change domain to be > total spending
+    .domain([0, 6000])
     .range([height, 0]);       // This is the corresponding value I want in Pixel
   svg
     .append('g')
@@ -69,13 +70,13 @@ d3.csv(csvFile).then(function(theData) {
     .data(stackedData)
     .enter()
     .append("path")
-	  .style("fill", function(d) { name = categories[d.key-1]; return color(name); })
+	  .style("fill", function(d) { name = categories[d.key]; return color(name); })
 	  
       //.attr("fill", function(d) { return color(d.key) })
       .attr("stroke", function(d){ return color(d.key) }) // todo: have different color for line
       .attr("stroke-width", 1.5)
       .attr("d", d3.area()
-        .x(function(d) { console.log(d); return x(d.data.Year); })
+        .x(function(d, i) { return x(d.data.key); })
         .y0(function(d) { return y(d[0]); })
         .y1(function(d) { return y(d[1]); })
       )
