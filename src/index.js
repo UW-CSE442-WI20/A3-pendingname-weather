@@ -14,22 +14,6 @@ var svg = d3.select("#display")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-// // todo: load proper data
-// var data = [ {x:2010, y:10}, {x:2012, y:20}, {x:2005, y:20} ]
-//
-// X scale and Axis
-//
-// // Add 3 dots for 0, 50 and 100%
-// svG
-//   .selectAll("whatever")
-//   .data(data)
-//   .enter()
-//   .append("circle")
-//     .attr("cx", function(d){ return x(d.x) })
-//     .attr("cy", function(d){ return y(d.y) })
-//     .attr("r", 7)
-
-
 
 const csvFile = require('./data/pivoted_data.csv');
 d3.csv(csvFile).then(function(theData) {
@@ -62,23 +46,40 @@ d3.csv(csvFile).then(function(theData) {
     .append('g')
     .call(d3.axisLeft(y));
 	
-  function handleMouseMove(d, i) {  // Add interactivity
-    const currentXPosition = d3.mouse(this)[0];
+  function handleMouseOver(d, i) {  // Add interactivity
+	d3.select(this).transition()
+               .duration('50')
+               .attr('opacity', '.85');
+  }
+  
+  function handleMouseOut(d, i) {
+	d3.select(this).transition()
+               .duration('50')
+               .attr('opacity', '1');
+  }
+  
+  function handleMouseMove(d, i) {
+	      const currentXPosition = d3.mouse(this)[0];
 	const currentYPosition = d3.mouse(this)[1];
 	
     const xValue = x.invert(currentXPosition);
     const yValue = y.invert(currentYPosition);
 	
-	console.log(xValue + ", " + yValue);
-    //const bisectDate = d3.bisector(dataPoint => dataPoint.year).left;
-    // Get the index of the xValue relative to the dataSet
-    //const dataIndex = bisectDate(data, xValue, 1);
+	var year = Math.round(xValue);
+		
+	//console.log(year + ", " + yValue);
+	//console.log(stackedData[year.toString()]);
+	  console.log(categories[i]);
   }
 
   var res = sumstat.map(function(d){ return d.key }) // list of group names
   var color = d3.scaleOrdinal()
     .domain(res)
-    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#f7c82d','#a65628','#f781bf','#999999', '#4287f5'])
+    .range(["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"])
+	
+  var lineColor = d3.scaleOrdinal()
+    .domain(res)
+	.range(["#3a5a7d","#ca6a0c","#c62325","#4d938e","#42783b","#d3a914","#8b537c","#ff364a","#755747","#918179"])
 	
   var area = d3.area()
         .x(function(d, i) { return x(d.data.key); })
@@ -90,10 +91,11 @@ d3.csv(csvFile).then(function(theData) {
     .enter()
     .append("path")
 	  .style("fill", function(d) { name = categories[d.key]; return color(name); })
-	  
-      //.attr("fill", function(d) { return color(d.key) })
-      .attr("stroke", function(d){ return color(d.key) }) // todo: have different color for line
-      .attr("stroke-width", 1.5)
+      .attr("stroke", function(d){ return lineColor(d.key) }) // todo: have different color for line
+      .attr("stroke-width", 1)
+	  .attr("id", function(d) { return categories[d.key] } )
       .attr("d", area)
+	.on("mouseover", handleMouseOver)
+	.on("mouseout", handleMouseOut)
 	.on("mousemove", handleMouseMove);
 });
