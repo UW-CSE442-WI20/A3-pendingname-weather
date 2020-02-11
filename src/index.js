@@ -74,7 +74,7 @@ d3.csv(csvFile).then(function(theData) {
         tooltip.style("display", null);
         d3.select(this).transition()
             .duration('50')
-            .attr('opacity', '.85');
+            .attr('opacity', '0.85');
     }
 
     function handleMouseOut(d, i) {
@@ -96,6 +96,42 @@ d3.csv(csvFile).then(function(theData) {
         var yPos = d3.mouse(this)[1] - 55;
         tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
         tooltip.select("text").text(categories[i]);
+    }
+
+    function handleMouseClick(d, i) {
+      var categ = categories[i]
+      var colour = color(categ)
+      var lineColour = lineColor(categ)
+
+        tooltip.style("display", "none");
+        svg.selectAll("path").remove()
+
+        svg.append("path")
+          .datum(sumstat)
+          .style("fill", colour)
+          .attr("stroke", lineColour)
+          .attr("stroke-width", 1)
+          .attr("id", categ)
+          .attr("d", d3.area()
+              .x(function(d) { return x(d.key); })
+              .y0(function(d) { return y(0); })
+              .y1(function(d) { return y(d.values[i].Spending); })
+            )
+          .on("mouseover", handleMouseOver)
+          .on("mouseout", handleMouseOut)
+          .on("mousemove", function(d, i) {
+            const currentXPosition = d3.mouse(this)[0];
+            const currentYPosition = d3.mouse(this)[1];
+
+            const xValue = x.invert(currentXPosition);
+            const yValue = y.invert(currentYPosition);
+
+            var year = Math.round(xValue);
+            var xPos = d3.mouse(this)[0] - 15;
+            var yPos = d3.mouse(this)[1] - 55;
+            tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+            tooltip.select("text").text(categ);
+          })
     }
 
     var res = sumstat.map(function(d) {
@@ -120,6 +156,17 @@ d3.csv(csvFile).then(function(theData) {
             return y(d[1]);
         });
 
+    var area2 = d3.area()
+        .x(function(d, i) {
+            return x(d.key);
+        })
+        .y0(function(d) {
+            return y(0);
+        })
+        .y1(function(d) {
+
+        });
+
     svg.selectAll(".line")
         .data(stackedData)
         .enter()
@@ -139,6 +186,7 @@ d3.csv(csvFile).then(function(theData) {
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut)
         .on("mousemove", handleMouseMove)
+        .on("click", handleMouseClick)
 
     var tooltip = svg.append("g")
         .attr("class", tooltip)
