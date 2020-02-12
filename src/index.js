@@ -23,7 +23,8 @@ const csvFile = require('./data/pivoted_data.csv');
 
 //button to swap over datasets
 d3.select("body").append("button")
-    .text("reset")
+    .text("Reset")
+	.attr("id", "reset-button")
     .on("click",function(){
         //rejoin data
         svg.selectAll("path").remove();
@@ -124,7 +125,9 @@ function reDraw(csvFileName){
             var xPos = d3.mouse(this)[0] - 15;
             var yPos = d3.mouse(this)[1] - 55;
             tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
-            tooltip.select("text").text(categories[i]);
+            tooltip.select("text")
+				.text(categories[i])
+				.attr("id", "tooltip");
         }
 
         function handleMouseClick(d, i) {
@@ -156,20 +159,23 @@ function reDraw(csvFileName){
                 )
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut)
-                .on("mousemove", function (d, i) {
-                    const currentXPosition = d3.mouse(this)[0];
-                    const currentYPosition = d3.mouse(this)[1];
-
-                    const xValue = x.invert(currentXPosition);
-                    const yValue = y.invert(currentYPosition);
-
-                    var year = Math.round(xValue);
-                    var xPos = d3.mouse(this)[0] - 15;
-                    var yPos = d3.mouse(this)[1] - 55;
-                    tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
-                    tooltip.select("text").text(categ);
-                })
+                .on("mousemove", handleMouseMove)
+			
+			tooltip = appendTooltip();
         }
+		
+		function appendTooltip() {
+			var tooltip = svg.append("g")
+            .attr("class", tooltip)
+            .style("display", "none");
+			tooltip.append("text")
+				.attr("x", 15)
+				.attr("y", 30)
+				.attr("dy", "1.2em")
+				.style("font_size", "1.25em")
+				.attr("font-weight", "bold");
+			return tooltip;
+		}
 
         var res = sumstat.map(function (d) {
             return d.key
@@ -201,7 +207,7 @@ function reDraw(csvFileName){
                 return y(0);
             })
             .y1(function (d) {
-
+				return y(0);
             });
 
         svg.selectAll(".line")
@@ -225,23 +231,16 @@ function reDraw(csvFileName){
             .on("mousemove", handleMouseMove)
             .on("click", handleMouseClick)
 
-        var tooltip = svg.append("g")
-            .attr("class", tooltip)
-            .style("display", "none");
-        tooltip.append("text")
-            .attr("x", 15)
-            .attr("dy", "1.2em")
-            .style("font_size", "1.25em")
-            .attr("font-weight", "bold");
+        var tooltip = appendTooltip();
 
-        var size = 20
+        var size = 24
         svg.selectAll(".line")
             .data(categories)
             .enter()
             .append("rect")
             .attr("x", 600)
             .attr("y", function (d, i) {
-                return 225 - i * (size + 5)
+                return 260 - i * (size + 5)
             }) // 100 is where the first dot appears. 25 is the distance between dots
             .attr("width", size)
             .attr("height", size)
@@ -256,7 +255,7 @@ function reDraw(csvFileName){
             .append("text")
             .attr("x", 600 + size * 1.2)
             .attr("y", function (d, i) {
-                return 225 - i * (size + 5) + (size / 2)
+                return 260 - i * (size + 5) + (size / 2)
             }) // 100 is where the first dot appears. 25 is the distance between dots
             .style("fill", function (d) {
                 return color(d)
