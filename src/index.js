@@ -1,11 +1,11 @@
 // set the dimensions and margins of the graph
 var margin = {
-        top: 20,
-        right: 60,
-        bottom: 30,
+        top: 60,
+        right: 350,
+        bottom: 100,
         left: 60
     },
-    width = 800 - margin.left - margin.right,
+    width = 1000 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
 var d3 = require("d3");
@@ -36,8 +36,7 @@ d3.csv(csvFile).then(function(theData) {
             return d.values[key].Spending;
         })
         (sumstat)
-
-    var x = d3.scaleLinear()
+	var x = d3.scaleLinear()
         .domain([2000, 2024]) // This is the min and the max of the data: 0 to 100 if percentages
         .range([0, width]); // This is the corresponding value I want in Pixel
     svg
@@ -47,17 +46,35 @@ d3.csv(csvFile).then(function(theData) {
 
     // Y scale and Axis
     var y = d3.scaleLinear()
-        .domain([0, 6000])
+        //.domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
+		.domain([0, 6000])
         .range([height, 0]); // This is the corresponding value I want in Pixel
     svg
         .append('g')
         .call(d3.axisLeft(y));
 
+    // text label for the x axis
+    svg.append("text")
+        .attr("transform",
+            "translate(" + (width / 2) + " ," +
+            (height + margin.top) + ")")
+        .style("text-anchor", "middle")
+        .text("Year");
+
+    // text label for the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Billions of USD");
+
     function handleMouseOver(d, i) { // Add interactivity
         tooltip.style("display", null);
         d3.select(this).transition()
             .duration('50')
-            .attr('opacity', '.85');
+            .attr('opacity', '0.85');
     }
 
     function handleMouseOut(d, i) {
@@ -75,15 +92,48 @@ d3.csv(csvFile).then(function(theData) {
         const yValue = y.invert(currentYPosition);
 
         var year = Math.round(xValue);
-
-        //console.log(year + ", " + yValue);
-        //console.log(stackedData[year.toString()]);
-        console.log(categories[i]);
-        console.log(xValue + ", " + yValue);
         var xPos = d3.mouse(this)[0] - 15;
         var yPos = d3.mouse(this)[1] - 55;
         tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
         tooltip.select("text").text(categories[i]);
+    }
+
+    function handleMouseClick(d, i) {
+      var categ = categories[i]
+      var colour = color(categ)
+      var lineColour = lineColor(i)
+      console.log(lineColour)
+
+        tooltip.style("display", "none");
+        svg.selectAll("path").remove()
+
+        svg.append("path")
+          .datum(sumstat)
+          .style("fill", colour)
+          .attr("d", area2)
+          .attr("stroke", lineColour)
+          .attr("stroke-width", 1)
+          .attr("id", categ)
+          .attr("d", d3.area()
+              .x(function(d) { return x(d.key); })
+              .y0(function(d) { return y(0); })
+              .y1(function(d) { return y(d.values[i].Spending); })
+            )
+          .on("mouseover", handleMouseOver)
+          .on("mouseout", handleMouseOut)
+          .on("mousemove", function(d, i) {
+            const currentXPosition = d3.mouse(this)[0];
+            const currentYPosition = d3.mouse(this)[1];
+
+            const xValue = x.invert(currentXPosition);
+            const yValue = y.invert(currentYPosition);
+
+            var year = Math.round(xValue);
+            var xPos = d3.mouse(this)[0] - 15;
+            var yPos = d3.mouse(this)[1] - 55;
+            tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+            tooltip.select("text").text(categ);
+          })
     }
 
     var res = sumstat.map(function(d) {
@@ -108,6 +158,17 @@ d3.csv(csvFile).then(function(theData) {
             return y(d[1]);
         });
 
+    var area2 = d3.area()
+        .x(function(d, i) {
+            return x(d.key);
+        })
+        .y0(function(d) {
+            return y(0);
+        })
+        .y1(function(d) {
+
+        });
+
     svg.selectAll(".line")
         .data(stackedData)
         .enter()
@@ -127,6 +188,7 @@ d3.csv(csvFile).then(function(theData) {
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut)
         .on("mousemove", handleMouseMove)
+        .on("click", handleMouseClick)
 
     var tooltip = svg.append("g")
         .attr("class", tooltip)
@@ -137,72 +199,26 @@ d3.csv(csvFile).then(function(theData) {
         .style("font_size", "1.25em")
         .attr("font-weight", "bold");
 
+var size = 20
+svg.selectAll(".line")
+  .data(categories)
+  .enter()
+  .append("rect")
+    .attr("x", 600)
+    .attr("y", function(d,i){ return 225 - i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d){ return color(d)})
 
-
-
-
-
-
-
-
-
-
-    // What to do when one group is hovered
-    var highlight = function(d){
-        console.log(d)
-        // reduce opacity of all groups
-        d3.selectAll(".myArea").style("opacity", .1)
-        // expect the one that is hovered
-        d3.select("."+d).style("opacity", 1)
-    }
-
-    // And when it is not hovered anymore
-    var noHighlight = function(d){
-        d3.selectAll(".myArea").style("opacity", 1)
-    }
-
-
-
-
-
-
-
-
-
-    // Add one dot in the legend for each name.
-    var size = 20
-    svg.selectAll("myrect")
-        .data(theData)
-        .enter()
-        .append("rect")
-        .attr("x", 400)
-        .attr("y", function(d,i){ return 10 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-        .attr("width", size)
-        .attr("height", size)
-        .style("fill", function(d){ return color(d)})
-        .on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
-
-    // Add one dot in the legend for each name.
-    svg.selectAll("mylabels")
-        .data(theData)
-        .enter()
-        .append("text")
-        .attr("x", 400 + size*1.2)
-        .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-        .style("fill", function(d){ return color(d)})
-        .text(function(d){ return d})
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle")
-        .on("mouseover", highlight)
-        .on("mouseleave", noHighlight)
-
-
-
-
-
-
-
-
-
+// Add one dot in the legend for each name.
+svg.selectAll("mylabels")
+  .data(categories)
+  .enter()
+  .append("text")
+    .attr("x", 600 + size*1.2)
+    .attr("y", function(d,i){ return 225 - i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .style("fill", function(d){ return color(d)})
+    .text(function(d){ return d})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
 });
