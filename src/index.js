@@ -24,10 +24,9 @@ const csvFile = require('./data/pivoted_data.csv');
 //button to swap over datasets
 d3.select("body").append("button")
     .text("Reset")
-    .attr("id", "reset-button")
-    .on("click", function () {
+    .on("click",function(){
         //rejoin data
-        svg.selectAll("*").remove();
+        svg.selectAll("path").remove();
         reDraw(csvFile);
 
 
@@ -49,10 +48,8 @@ d3.select("body").append("button")
 
     });//end click function
 
-function reDraw(csvFileName) {
+function reDraw(csvFileName){
     console.log('redraw');
-    // clear display
-
     d3.csv(csvFileName).then(function (theData) {
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
             .key(function (d) {
@@ -62,47 +59,28 @@ function reDraw(csvFileName) {
 
         var categories = ["Defense", "Education", "General Government", "Health Care", "Interest", "Other Spending", "Pensions", "Protection", "Transportation", "Welfare"];
         var category = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-        // the y-scale max value to use when zooming in on a category.
-        // this doesn't have to be hardcoded, but i couldn't get it to work otherwise.
-        var categoryYMax = [1000, 200, 100, 2000, 1000, 1000, 2000, 100, 200, 1000];
         var stackedData = d3.stack()
             .keys(category)
             .value(function (d, key) {
                 return d.values[key].Spending;
             })
             (sumstat)
-
         var x = d3.scaleLinear()
             .domain([2000, 2024]) // This is the min and the max of the data: 0 to 100 if percentages
             .range([0, width]); // This is the corresponding value I want in Pixel
+        svg
+            .append('g')
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
         // Y scale and Axis
         var y = d3.scaleLinear()
         //.domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
             .domain([0, 6000])
             .range([height, 0]); // This is the corresponding value I want in Pixel
-
-        var yAxis;
-        var xAxis;
-
-        function displayX() {
-            xAxis = svg
-                .append('g')
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x).tickFormat(d3.format("d")));
-        }
-
-        function displayY() {
-            yAxis = d3.axisLeft(y);
-            svg
-                .append('g')
-                .attr("class", "yaxis")
-                .call(yAxis);
-        }
-
-        displayX();
-        displayY();
+        svg
+            .append('g')
+            .call(d3.axisLeft(y));
 
         // text label for the x axis
         svg.append("text")
@@ -119,53 +97,7 @@ function reDraw(csvFileName) {
             .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
-            .text("Billions of USD");
-
-        var clip = svg.append("defs").append("svg:clipPath")
-            .attr("id", "clip")
-            .append("svg:rect")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("x", 0)
-            .attr("y", 0);
-
-        var brush = d3.brushX()                 // Add the brush feature using the d3.brush function
-            .extent([[0, 0], [width, height]]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-            .on("end", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
-
-        var areaChart = svg.append('g')
-            .attr("clip-path", "url(#clip)")
-
-        areaChart
-            .append("g")
-            .attr("class", "brush")
-            .call(brush);
-
-        var idleTimeout
-
-        function idled() {
-            idleTimeout = null;
-        }
-
-        // A function that update the chart for given boundaries
-        function updateChart() {
-            extent = d3.event.selection
-            if (!extent) {
-                if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-                x.domain(d3.extent(data, function (d) {
-                    return d.Year;
-                }))
-            } else {
-                x.domain([x.invert(extent[0]), x.invert(extent[1])])
-                areaChart.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
-            }
-            // Update axis and area position
-            xAxis.transition().duration(1000).call(d3.axisBottom(x).ticks(5))
-            areaChart
-                .selectAll("path")
-                .transition().duration(1000)
-                .attr("d", area)
-        }
+            .text("USD (Billions)");
 
         function handleMouseOver(d, i) { // Add interactivity
             tooltip.style("display", null);
@@ -190,48 +122,38 @@ function reDraw(csvFileName) {
 
             var year = Math.round(xValue);
             var xPos = d3.mouse(this)[0] - 15;
-            var yPos = d3.mouse(this)[1] - 25;
+            var yPos = d3.mouse(this)[1] - 55;
             tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
-            tooltip.select("text")
-                .text(categories[i])
-                .attr("id", "tooltip");
+            tooltip.select("text").text(categories[i]);
         }
 
         function handleMouseClick(d, i) {
-            svg.select(".yaxis").remove();
-            // rescale
-            y.domain([0, categoryYMax[i]])
-            //svg.select(".yaxis")
-            //        .transition().duration(1500).ease()  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
-            //        .call(yAxis);
-
-
             var categ = categories[i]
             var colour = color(categ)
             var lineColour = lineColor(i)
             console.log(lineColour)
 
             tooltip.style("display", "none");
-            areaChart.selectAll("path").remove()
+            svg.selectAll("path").remove()
 
-            area = d3.area()
-                .x(function (d) {
-                    return x(d.key);
-                })
-                .y0(function (d) {
-                    return y(0);
-                })
-                .y1(function (d) {
-                    return y(d.values[i].Spending);
-                })
-
-            areaChart.append("path")
+            svg.append("path")
                 .datum(sumstat)
                 .style("fill", colour)
+                .attr("d", area2)
                 .attr("stroke", lineColour)
                 .attr("stroke-width", 1)
                 .attr("id", categ)
-                .attr("d", area)
+                .attr("d", d3.area()
+                    .x(function (d) {
+                        return x(d.key);
+                    })
+                    .y0(function (d) {
+                        return y(0);
+                    })
+                    .y1(function (d) {
+                        return y(d.values[i].Spending);
+                    })
+                )
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut)
                 .on("mousemove", function (d, i) {
@@ -243,27 +165,10 @@ function reDraw(csvFileName) {
 
                     var year = Math.round(xValue);
                     var xPos = d3.mouse(this)[0] - 15;
-                    var yPos = d3.mouse(this)[1] - 25;
+                    var yPos = d3.mouse(this)[1] - 55;
                     tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
-                    tooltip.select("text")
-                        .text(categ)
-                        .attr("id", "tooltip");
+                    tooltip.select("text").text(categ);
                 })
-
-            tooltip = appendTooltip();
-            displayY();
-        }
-
-        function appendTooltip() {
-            var tooltip = svg.append("g")
-                .attr("class", tooltip)
-                .style("display", "none");
-            tooltip.append("text")
-                .attr("x", 15)
-                .attr("dy", "1.2em")
-                .style("font_size", "1.25em")
-                .attr("font-weight", "bold");
-            return tooltip;
         }
 
         var res = sumstat.map(function (d) {
@@ -288,7 +193,18 @@ function reDraw(csvFileName) {
                 return y(d[1]);
             });
 
-        areaChart.selectAll(".line")
+        var area2 = d3.area()
+            .x(function (d, i) {
+                return x(d.key);
+            })
+            .y0(function (d) {
+                return y(0);
+            })
+            .y1(function (d) {
+
+            });
+
+        svg.selectAll(".line")
             .data(stackedData)
             .enter()
             .append("path")
@@ -309,16 +225,23 @@ function reDraw(csvFileName) {
             .on("mousemove", handleMouseMove)
             .on("click", handleMouseClick)
 
-        var tooltip = appendTooltip();
+        var tooltip = svg.append("g")
+            .attr("class", tooltip)
+            .style("display", "none");
+        tooltip.append("text")
+            .attr("x", 15)
+            .attr("dy", "1.2em")
+            .style("font_size", "1.25em")
+            .attr("font-weight", "bold");
 
-        var size = 24
+        var size = 20
         svg.selectAll(".line")
             .data(categories)
             .enter()
             .append("rect")
             .attr("x", 600)
             .attr("y", function (d, i) {
-                return 260 - i * (size + 5)
+                return 225 - i * (size + 5)
             }) // 100 is where the first dot appears. 25 is the distance between dots
             .attr("width", size)
             .attr("height", size)
@@ -333,7 +256,7 @@ function reDraw(csvFileName) {
             .append("text")
             .attr("x", 600 + size * 1.2)
             .attr("y", function (d, i) {
-                return 260 - i * (size + 5) + (size / 2)
+                return 225 - i * (size + 5) + (size / 2)
             }) // 100 is where the first dot appears. 25 is the distance between dots
             .style("fill", function (d) {
                 return color(d)
