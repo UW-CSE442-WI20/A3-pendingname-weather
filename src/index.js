@@ -109,6 +109,7 @@ d3.csv(csvFile).then(function(theData) {
         svg.append("path")
           .datum(sumstat)
           .style("fill", colour)
+          .attr("d", area2)
           .attr("stroke", lineColour)
           .attr("stroke-width", 1)
           .attr("id", categ)
