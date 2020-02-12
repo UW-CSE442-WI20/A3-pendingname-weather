@@ -101,7 +101,8 @@ d3.csv(csvFile).then(function(theData) {
     function handleMouseClick(d, i) {
       var categ = categories[i]
       var colour = color(categ)
-      var lineColour = lineColor(categ)
+      var lineColour = lineColor(i)
+      console.log(lineColour)
 
         tooltip.style("display", "none");
         svg.selectAll("path").remove()
