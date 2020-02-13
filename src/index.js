@@ -69,20 +69,25 @@ function reDraw(csvFileName){
         var x = d3.scaleLinear()
             .domain([2000, 2024]) // This is the min and the max of the data: 0 to 100 if percentages
             .range([0, width]); // This is the corresponding value I want in Pixel
-        svg
-            .append('g')
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
         // Y scale and Axis
         var y = d3.scaleLinear()
         //.domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
             .domain([0, 6000])
             .range([height, 0]); // This is the corresponding value I want in Pixel
-        svg
-            .append('g')
-            .call(d3.axisLeft(y));
 
+		function displayAxes() {
+			svg
+				.append('g')
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x).tickFormat(d3.format("d")));
+			svg
+				.append('g')
+				.call(d3.axisLeft(y));
+		}
+		
+		displayAxes();
+		
         // text label for the x axis
         svg.append("text")
             .attr("transform",
@@ -161,6 +166,7 @@ function reDraw(csvFileName){
                 .on("mousemove", handleMouseMove)
 
 			tooltip = appendTooltip();
+			displayAxes();
         }
 
 		function appendTooltip() {
