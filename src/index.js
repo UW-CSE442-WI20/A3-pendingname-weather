@@ -85,9 +85,9 @@ function reDraw(csvFileName){
 				.append('g')
 				.call(d3.axisLeft(y));
 		}
-		
+
 		displayAxes();
-		
+
         // text label for the x axis
         svg.append("text")
             .attr("transform",
@@ -163,10 +163,24 @@ function reDraw(csvFileName){
                 )
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut)
-                .on("mousemove", handleMouseMove)
+                .on("mousemove", function(d, i) {
+                      const currentXPosition = d3.mouse(this)[0];
+                      const currentYPosition = d3.mouse(this)[1];
 
-			tooltip = appendTooltip();
-			displayAxes();
+                      const xValue = x.invert(currentXPosition);
+                      const yValue = y.invert(currentYPosition);
+
+                      var year = Math.round(xValue);
+                      var xPos = d3.mouse(this)[0] - 15;
+                      var yPos = d3.mouse(this)[1] - 55;
+                      tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+                      tooltip.select("text")
+          				.text(categ)
+          				.attr("id", "tooltip");
+                })
+
+      			tooltip = appendTooltip();
+      			displayAxes();
         }
 
 		function appendTooltip() {
