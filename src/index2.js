@@ -335,7 +335,7 @@ var config = {
         title: {
             display: true,
             fontSize: 20,
-            text: 'U.S. Federal Government Spending Visualization'
+            text: ['U.S. Federal Government Spending Visualization','','Select the categories to toggle inclusion.']
         },
         tooltips: {
             mode: 'index',
@@ -362,7 +362,7 @@ var config = {
 			line: {
 				tension: 0
 			}
-			}
+		}
 	}
 };
 
@@ -376,7 +376,7 @@ window.onload = function() {
 document.getElementById('randomizeData').addEventListener('click', function() {
     config.data.datasets.forEach(function(dataset) {
         dataset.data = dataset.data.map(function() {
-            return randomScalingFactor();
+            return Math.abs(randomScalingFactor());
         });
 
     });
