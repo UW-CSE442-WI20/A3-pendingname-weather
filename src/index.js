@@ -93,9 +93,9 @@ function reDraw(csvFileName){
 				.attr("class", "yaxis")
 				.call(yAxis);
 		}
-		
+
 		displayAxes();
-		
+
         // text label for the x axis
         svg.append("text")
             .attr("transform",
@@ -194,7 +194,7 @@ function reDraw(csvFileName){
 				})
 
 			tooltip = appendTooltip();
-			displayAxes();		
+			displayAxes();
         }
 
 		function appendTooltip() {
