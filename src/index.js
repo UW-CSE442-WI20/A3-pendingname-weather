@@ -142,7 +142,6 @@ function reDraw(csvFileName){
             svg.append("path")
                 .datum(sumstat)
                 .style("fill", colour)
-                .attr("d", area2)
                 .attr("stroke", lineColour)
                 .attr("stroke-width", 1)
                 .attr("id", categ)
@@ -160,10 +159,10 @@ function reDraw(csvFileName){
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut)
                 .on("mousemove", handleMouseMove)
-			
+
 			tooltip = appendTooltip();
         }
-		
+
 		function appendTooltip() {
 			var tooltip = svg.append("g")
             .attr("class", tooltip)
@@ -197,17 +196,6 @@ function reDraw(csvFileName){
             })
             .y1(function (d) {
                 return y(d[1]);
-            });
-
-        var area2 = d3.area()
-            .x(function (d, i) {
-                return x(d.key);
-            })
-            .y0(function (d) {
-                return y(0);
-            })
-            .y1(function (d) {
-				return y(0);
             });
 
         svg.selectAll(".line")
