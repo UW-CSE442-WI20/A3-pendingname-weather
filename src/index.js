@@ -27,7 +27,7 @@ d3.select("body").append("button")
 	.attr("id", "reset-button")
     .on("click",function(){
         //rejoin data
-        svg.selectAll("path").remove();
+        svg.selectAll("*").remove();
         reDraw(csvFile);
 
 
@@ -51,6 +51,8 @@ d3.select("body").append("button")
 
 function reDraw(csvFileName){
     console.log('redraw');
+	// clear display
+	
     d3.csv(csvFileName).then(function (theData) {
         var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
             .key(function (d) {
@@ -144,11 +146,12 @@ function reDraw(csvFileName){
         }
 
         function handleMouseClick(d, i) {
+			svg.select(".yaxis").remove();
 			// rescale
 			y.domain([0, categoryYMax[i]])
-            svg.select(".yaxis")
-                    //.transition().duration(1500).ease("sin-in-out")  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
-                    .call(yAxis);  
+            //svg.select(".yaxis")
+            //        .transition().duration(1500).ease()  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
+            //        .call(yAxis);
 
             var categ = categories[i]
             var colour = color(categ)
