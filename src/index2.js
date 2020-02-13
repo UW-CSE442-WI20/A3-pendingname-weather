@@ -357,14 +357,18 @@ var config = {
                     labelString: 'USD (Billions)'
                 }
             }]
-        }
-    }
+        },
+		elements: {
+			line: {
+				tension: 0
+			}
+			}
+	}
 };
 
 var currentYear = 2020;
 
 window.onload = function() {
-	console.log("BRUH");
     var ctx = document.getElementById('canvas').getContext('2d');
     window.myLine = new Chart(ctx, config);
 };
