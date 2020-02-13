@@ -60,12 +60,17 @@ function reDraw(csvFileName){
 
         var categories = ["Defense", "Education", "General Government", "Health Care", "Interest", "Other Spending", "Pensions", "Protection", "Transportation", "Welfare"];
         var category = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+		
+		// the y-scale max value to use when zooming in on a category.
+		// this doesn't have to be hardcoded, but i couldn't get it to work otherwise.
+		var categoryYMax = [1000, 200, 100, 2000, 1000, 1000, 2000, 100, 200, 1000];
         var stackedData = d3.stack()
             .keys(category)
             .value(function (d, key) {
                 return d.values[key].Spending;
             })
             (sumstat)
+			
         var x = d3.scaleLinear()
             .domain([2000, 2024]) // This is the min and the max of the data: 0 to 100 if percentages
             .range([0, width]); // This is the corresponding value I want in Pixel
@@ -76,14 +81,17 @@ function reDraw(csvFileName){
             .domain([0, 6000])
             .range([height, 0]); // This is the corresponding value I want in Pixel
 
+		var yAxis;
 		function displayAxes() {
 			svg
 				.append('g')
 				.attr("transform", "translate(0," + height + ")")
 				.call(d3.axisBottom(x).tickFormat(d3.format("d")));
+			yAxis = d3.axisLeft(y);
 			svg
 				.append('g')
-				.call(d3.axisLeft(y));
+				.attr("class", "yaxis")
+				.call(yAxis);
 		}
 		
 		displayAxes();
@@ -128,7 +136,7 @@ function reDraw(csvFileName){
 
             var year = Math.round(xValue);
             var xPos = d3.mouse(this)[0] - 15;
-            var yPos = d3.mouse(this)[1] - 55;
+            var yPos = d3.mouse(this)[1] - 25;
             tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
             tooltip.select("text")
 				.text(categories[i])
@@ -136,6 +144,12 @@ function reDraw(csvFileName){
         }
 
         function handleMouseClick(d, i) {
+			// rescale
+			y.domain([0, categoryYMax[i]])
+            svg.select(".yaxis")
+                    //.transition().duration(1500).ease("sin-in-out")  // https://github.com/mbostock/d3/wiki/Transitions#wiki-d3_ease
+                    .call(yAxis);  
+
             var categ = categories[i]
             var colour = color(categ)
             var lineColour = lineColor(i)
@@ -163,10 +177,24 @@ function reDraw(csvFileName){
                 )
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut)
-                .on("mousemove", handleMouseMove)
+                .on("mousemove", function(d,i) { 
+					const currentXPosition = d3.mouse(this)[0];
+					const currentYPosition = d3.mouse(this)[1];
+
+					const xValue = x.invert(currentXPosition);
+					const yValue = y.invert(currentYPosition);
+
+					var year = Math.round(xValue);
+					var xPos = d3.mouse(this)[0] - 15;
+					var yPos = d3.mouse(this)[1] - 25;
+					tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+					tooltip.select("text")
+						.text(categ)
+						.attr("id", "tooltip"); 
+				})
 
 			tooltip = appendTooltip();
-			displayAxes();
+			displayAxes();		
         }
 
 		function appendTooltip() {
@@ -175,7 +203,6 @@ function reDraw(csvFileName){
             .style("display", "none");
 			tooltip.append("text")
 				.attr("x", 15)
-				.attr("y", 30)
 				.attr("dy", "1.2em")
 				.style("font_size", "1.25em")
 				.attr("font-weight", "bold");
