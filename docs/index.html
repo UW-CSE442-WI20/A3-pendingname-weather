@@ -1,2 +1,50 @@
-<!doctype html><html><head><title>Line Chart</title><link rel="stylesheet" type="text/css" href="src.e6289eb7.css"><script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script><script src="https://www.chartjs.org/samples/latest/utils.js"></script><style>canvas{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none}</style></head><body> <div style="width:75%;"> <canvas id="canvas"></canvas> </div> <br> <br> <button id="randomizeData">Randomize Data (Fun)</button> <input type="range" min="2001" max="2024" value="2020" class="slider" id="yearSlider" onchange=";"> <span id="value">2020</span>   <button id="reset">Reset</button> <div id="display"></div> <script src="src.a364f36b.js"></script> <script src="index2.2109932c.js"></script>
-</body></html>
+<!doctype html>
+<html>
+
+<head>
+	<title>Line Chart</title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+	<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+	<style>
+		canvas {
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width:75%;" id="main">
+		<canvas id="canvas"></canvas>
+		<span>Select max year <span class="smol">(years past 2020 include estimated budgets)</span>:</span>
+		<input type="range" min="2001" max="2024" value="2020" class="slider" id="yearSlider" onchange=";">
+		<span id="value">2020</span>
+		<button id="reset">Reset</button>
+		<br>
+		<button id="randomizeData">Randomize Data (Fun)</button>
+	</div>
+	<br>
+	<!-- <button id="addData">Add Year</button> -->
+    <!-- <button id="removeData">Remove Year</button> -->
+
+    <div id="display"></div>
+	<div id="writeup">
+		<p>We chose our dataset by brainstorming easily accessible information that is commonly misunderstood or misrepresented. This led us to choosing a dataset on government spending, specifically the US Federal Budget for the past 50 or so years. We chose to focus on the last 20 years since they hold the most relevance to us today.</p>
+
+		<p>To effectively display the data, we decided to go with an interactive stacked area chart that displays the amounts of spending per category (e.g., defense, welfare, and education) over time. We have chosen a stacked area chart because it allows the user to directly compare budget allocations for different categories. The user could get a better understanding on which categories receive more funding compared to others and how has that changed over years.</p>
+
+		<p>To make it easier for the user to understand which color in the graph corresponds to which category, we have included a legend on the top. Often times, users would like to explore a single or group of categories of interest more closely. To accommodate this, we have implemented category selection in the legend. The user can click on a particular category in the legend to check and uncheck it as well. Using this feature, the user can select any subset of categories to explore them more deeply. Giving the user the choice to explore categories more closely can help him/her gain a better understanding of the funding trend of individual categories and also allows him/her to more closely observe relationships among a subset of categories he/she might have encountered.</p>
+
+		<p>Additionally, if the user wants to explore the trend over a subset of years, they can do it by using the desired subset of years using the slider. By being able to explore the trend over specific years, the user can capture sudden hikes and drops and explore the reasons behind the corresponding hike or drop. For example, there was a sudden hike in the government spending of the “Other Spending” category in 2009. A likely reason for this would be the bank or auto bailouts of 2008, which don’t seem to fit into any other category. Basically, it allows the user to observe and find answers for any questions they might have for sudden or gradual changes in the trend.</p>
+
+		<p>Furthermore, we have added tooltips to our graph to make it easier for a user to compare and contrast data. Tooltips are visible upon hover and display the year and the levels of spending for this year. This allows the user to glean precise information from the chart. We also added a slider that allows the user to control the latest year to include in the visualization. We did this because the budgets past 2020 are not actual budgets, but are instead projected or estimated budgets.</p>
+
+		<p>We spent around 12-15 hours per person for this project. We did this by meeting up several times, for sessions from 2-5 hours long, as well as dividing up responsibilities to work on independently. This made our contributions roughly equal. Unfortunately, we spent a large majority of our time working on an implementation in D3, only to learn that Charts.js could much more easily implement the functions we hoped to include, for example animated transitions and multi-category filters. However, we’re glad we learned D3, since we plan on using it for our final project, due to its extreme flexibility.</p>
+	</div>
+    <!-- <script src="index.js"></script> -->
+    <script src="index2.js"></script>
+</body>
+
+</html>

@@ -1,392 +1,271 @@
-// modules are defined as an array
-// [ module function, map of requires ]
-//
-// map of requires is short require name -> numeric require
-//
-// anything defined in a previous bundle is accessed via the
-// orig method which is the require for previous bundles
-parcelRequire = (function (modules, cache, entry, globalName) {
-  // Save the require from previous bundle to this closure if any
-  var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
-  var nodeRequire = typeof require === 'function' && require;
-
-  function newRequire(name, jumped) {
-    if (!cache[name]) {
-      if (!modules[name]) {
-        // if we cannot find the module within our internal map or
-        // cache jump to the current global require ie. the last bundle
-        // that was added to the page.
-        var currentRequire = typeof parcelRequire === 'function' && parcelRequire;
-        if (!jumped && currentRequire) {
-          return currentRequire(name, true);
-        }
-
-        // If there are other bundles on this page the require from the
-        // previous one is saved to 'previousRequire'. Repeat this as
-        // many times as there are bundles until the module is found or
-        // we exhaust the require chain.
-        if (previousRequire) {
-          return previousRequire(name, true);
-        }
-
-        // Try the node require function if it exists.
-        if (nodeRequire && typeof name === 'string') {
-          return nodeRequire(name);
-        }
-
-        var err = new Error('Cannot find module \'' + name + '\'');
-        err.code = 'MODULE_NOT_FOUND';
-        throw err;
-      }
-
-      localRequire.resolve = resolve;
-      localRequire.cache = {};
-
-      var module = cache[name] = new newRequire.Module(name);
-
-      modules[name][0].call(module.exports, localRequire, module, module.exports, this);
-    }
-
-    return cache[name].exports;
-
-    function localRequire(x){
-      return newRequire(localRequire.resolve(x));
-    }
-
-    function resolve(x){
-      return modules[name][1][x] || x;
-    }
-  }
-
-  function Module(moduleName) {
-    this.id = moduleName;
-    this.bundle = newRequire;
-    this.exports = {};
-  }
-
-  newRequire.isParcelRequire = true;
-  newRequire.Module = Module;
-  newRequire.modules = modules;
-  newRequire.cache = cache;
-  newRequire.parent = previousRequire;
-  newRequire.register = function (id, exports) {
-    modules[id] = [function (require, module) {
-      module.exports = exports;
-    }, {}];
-  };
-
-  var error;
-  for (var i = 0; i < entry.length; i++) {
-    try {
-      newRequire(entry[i]);
-    } catch (e) {
-      // Save first error but execute all entries
-      if (!error) {
-        error = e;
-      }
-    }
-  }
-
-  if (entry.length) {
-    // Expose entry point to Node, AMD or browser globals
-    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
-    var mainExports = newRequire(entry[entry.length - 1]);
-
-    // CommonJS
-    if (typeof exports === "object" && typeof module !== "undefined") {
-      module.exports = mainExports;
-
-    // RequireJS
-    } else if (typeof define === "function" && define.amd) {
-     define(function () {
-       return mainExports;
-     });
-
-    // <script>
-    } else if (globalName) {
-      this[globalName] = mainExports;
-    }
-  }
-
-  // Override the current require with this new one
-  parcelRequire = newRequire;
-
-  if (error) {
-    // throw error from earlier, _after updating parcelRequire_
-    throw error;
-  }
-
-  return newRequire;
-})({"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
-
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
-
-  return bundleURL;
-}
-
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
-
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
-
-  return '/';
-}
-
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
-
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
-  };
-
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
-    }
-
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
-var global = arguments[3];
-var OVERLAY_ID = '__parcel__error__overlay__';
-var OldModule = module.bundle.Module;
-
-function Module(moduleName) {
-  OldModule.call(this, moduleName);
-  this.hot = {
-    data: module.bundle.hotData,
-    _acceptCallbacks: [],
-    _disposeCallbacks: [],
-    accept: function (fn) {
-      this._acceptCallbacks.push(fn || function () {});
+// set the dimensions and margins of the graph
+var margin = {
+        top: 60,
+        right: 350,
+        bottom: 100,
+        left: 60
     },
-    dispose: function (fn) {
-      this._disposeCallbacks.push(fn);
-    }
-  };
-  module.bundle.hotData = null;
-}
+    width = 1000 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
 
-module.bundle.Module = Module;
-var checkedAssets, assetsToAccept;
-var parent = module.bundle.parent;
+var d3 = require("d3");
 
-if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
-  var hostname = "" || location.hostname;
-  var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56837" + '/');
+// append the svg object to the body of the page
+var svg = d3.select("#display")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
 
-  ws.onmessage = function (event) {
-    checkedAssets = {};
-    assetsToAccept = [];
-    var data = JSON.parse(event.data);
+const csvFile = require('./data/pivoted_data.csv');
 
-    if (data.type === 'update') {
-      var handled = false;
-      data.assets.forEach(function (asset) {
-        if (!asset.isNew) {
-          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+//button to swap over datasets
+d3.select("body").append("button")
+    .text("Reset")
+	.attr("id", "reset-button")
+    .on("click",function(){
+        //rejoin data
+        svg.selectAll("path").remove();
+        reDraw(csvFile);
 
-          if (didAccept) {
-            handled = true;
-          }
+
+        // circle.exit().remove();//remove unneeded circles
+        // circle.enter().append("circle")
+        //     .attr("r",0);//create any new circles needed
+
+        // //update all circles to new positions
+        // circle.transition()
+        //     .duration(500)
+        //     .attr("cx",function(d,i){
+        //         var spacing = lineLength/(eval("dataArray"+dataIndex).length);
+        //         return xBuffer+(i*spacing)
+        //     })
+        //     .attr("cy",yBuffer)
+        //     .attr("r",function(d,i){return d});
+
+        // d3.select("text").text("dataset"+dataIndex);
+
+    });//end click function
+
+function reDraw(csvFileName){
+    console.log('redraw');
+    d3.csv(csvFileName).then(function (theData) {
+        var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
+            .key(function (d) {
+                return d.Year;
+            })
+            .entries(theData);
+
+        var categories = ["Defense", "Education", "General Government", "Health Care", "Interest", "Other Spending", "Pensions", "Protection", "Transportation", "Welfare"];
+        var category = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        var stackedData = d3.stack()
+            .keys(category)
+            .value(function (d, key) {
+                return d.values[key].Spending;
+            })
+            (sumstat)
+        var x = d3.scaleLinear()
+            .domain([2000, 2024]) // This is the min and the max of the data: 0 to 100 if percentages
+            .range([0, width]); // This is the corresponding value I want in Pixel
+        svg
+            .append('g')
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+
+        // Y scale and Axis
+        var y = d3.scaleLinear()
+        //.domain([0, d3.max(theData, function(d) { console.log(d); return +d.Spending; })*1.2])
+            .domain([0, 6000])
+            .range([height, 0]); // This is the corresponding value I want in Pixel
+        svg
+            .append('g')
+            .call(d3.axisLeft(y));
+
+        // text label for the x axis
+        svg.append("text")
+            .attr("transform",
+                "translate(" + (width / 2) + " ," +
+                (height + margin.top) + ")")
+            .style("text-anchor", "middle")
+            .text("Year");
+
+        // text label for the y axis
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Billions of USD");
+
+        function handleMouseOver(d, i) { // Add interactivity
+            tooltip.style("display", null);
+            d3.select(this).transition()
+                .duration('50')
+                .attr('opacity', '0.85');
         }
-      }); // Enable HMR for CSS by default.
 
-      handled = handled || data.assets.every(function (asset) {
-        return asset.type === 'css' && asset.generated.js;
-      });
+        function handleMouseOut(d, i) {
+            tooltip.style("display", "none");
+            d3.select(this).transition()
+                .duration('50')
+                .attr('opacity', '1');
+        }
 
-      if (handled) {
-        console.clear();
-        data.assets.forEach(function (asset) {
-          hmrApply(global.parcelRequire, asset);
-        });
-        assetsToAccept.forEach(function (v) {
-          hmrAcceptRun(v[0], v[1]);
-        });
-      } else if (location.reload) {
-        // `location` global exists in a web worker context but lacks `.reload()` function.
-        location.reload();
-      }
-    }
+        function handleMouseMove(d, i) {
+            const currentXPosition = d3.mouse(this)[0];
+            const currentYPosition = d3.mouse(this)[1];
 
-    if (data.type === 'reload') {
-      ws.close();
+            const xValue = x.invert(currentXPosition);
+            const yValue = y.invert(currentYPosition);
 
-      ws.onclose = function () {
-        location.reload();
-      };
-    }
+            var year = Math.round(xValue);
+            var xPos = d3.mouse(this)[0] - 15;
+            var yPos = d3.mouse(this)[1] - 55;
+            tooltip.attr("transform", "translate(" + xPos + "," + yPos + ")");
+            tooltip.select("text")
+				.text(categories[i])
+				.attr("id", "tooltip");
+        }
 
-    if (data.type === 'error-resolved') {
-      console.log('[parcel] ✨ Error resolved');
-      removeErrorOverlay();
-    }
+        function handleMouseClick(d, i) {
+            var categ = categories[i]
+            var colour = color(categ)
+            var lineColour = lineColor(i)
+            console.log(lineColour)
 
-    if (data.type === 'error') {
-      console.error('[parcel] 🚨  ' + data.error.message + '\n' + data.error.stack);
-      removeErrorOverlay();
-      var overlay = createErrorOverlay(data);
-      document.body.appendChild(overlay);
-    }
-  };
-}
+            tooltip.style("display", "none");
+            svg.selectAll("path").remove()
 
-function removeErrorOverlay() {
-  var overlay = document.getElementById(OVERLAY_ID);
+            svg.append("path")
+                .datum(sumstat)
+                .style("fill", colour)
+                .attr("d", area2)
+                .attr("stroke", lineColour)
+                .attr("stroke-width", 1)
+                .attr("id", categ)
+                .attr("d", d3.area()
+                    .x(function (d) {
+                        return x(d.key);
+                    })
+                    .y0(function (d) {
+                        return y(0);
+                    })
+                    .y1(function (d) {
+                        return y(d.values[i].Spending);
+                    })
+                )
+                .on("mouseover", handleMouseOver)
+                .on("mouseout", handleMouseOut)
+                .on("mousemove", handleMouseMove)
+			
+			tooltip = appendTooltip();
+        }
+		
+		function appendTooltip() {
+			var tooltip = svg.append("g")
+            .attr("class", tooltip)
+            .style("display", "none");
+			tooltip.append("text")
+				.attr("x", 15)
+				.attr("y", 30)
+				.attr("dy", "1.2em")
+				.style("font_size", "1.25em")
+				.attr("font-weight", "bold");
+			return tooltip;
+		}
 
-  if (overlay) {
-    overlay.remove();
-  }
-}
+        var res = sumstat.map(function (d) {
+            return d.key
+        }) // list of group names
+        var color = d3.scaleOrdinal()
+            .domain(res)
+            .range(["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"])
 
-function createErrorOverlay(data) {
-  var overlay = document.createElement('div');
-  overlay.id = OVERLAY_ID; // html encode message and stack trace
+        var lineColor = d3.scaleOrdinal()
+            .domain(res)
+            .range(["#3a5a7d", "#ca6a0c", "#c62325", "#4d938e", "#42783b", "#d3a914", "#8b537c", "#ff364a", "#755747", "#918179"])
 
-  var message = document.createElement('div');
-  var stackTrace = document.createElement('pre');
-  message.innerText = data.error.message;
-  stackTrace.innerText = data.error.stack;
-  overlay.innerHTML = '<div style="background: black; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; opacity: 0.85; font-family: Menlo, Consolas, monospace; z-index: 9999;">' + '<span style="background: red; padding: 2px 4px; border-radius: 2px;">ERROR</span>' + '<span style="top: 2px; margin-left: 5px; position: relative;">🚨</span>' + '<div style="font-size: 18px; font-weight: bold; margin-top: 20px;">' + message.innerHTML + '</div>' + '<pre>' + stackTrace.innerHTML + '</pre>' + '</div>';
-  return overlay;
-}
+        var area = d3.area()
+            .x(function (d, i) {
+                return x(d.data.key);
+            })
+            .y0(function (d) {
+                return y(d[0]);
+            })
+            .y1(function (d) {
+                return y(d[1]);
+            });
 
-function getParents(bundle, id) {
-  var modules = bundle.modules;
+        var area2 = d3.area()
+            .x(function (d, i) {
+                return x(d.key);
+            })
+            .y0(function (d) {
+                return y(0);
+            })
+            .y1(function (d) {
+				return y(0);
+            });
 
-  if (!modules) {
-    return [];
-  }
+        svg.selectAll(".line")
+            .data(stackedData)
+            .enter()
+            .append("path")
+            .style("fill", function (d) {
+                name = categories[d.key];
+                return color(name);
+            })
+            .attr("stroke", function (d) {
+                return lineColor(d.key)
+            }) // todo: have different color for line
+            .attr("stroke-width", 1)
+            .attr("id", function (d) {
+                return categories[d.key]
+            })
+            .attr("d", area)
+            .on("mouseover", handleMouseOver)
+            .on("mouseout", handleMouseOut)
+            .on("mousemove", handleMouseMove)
+            .on("click", handleMouseClick)
 
-  var parents = [];
-  var k, d, dep;
+        var tooltip = appendTooltip();
 
-  for (k in modules) {
-    for (d in modules[k][1]) {
-      dep = modules[k][1][d];
+        var size = 24
+        svg.selectAll(".line")
+            .data(categories)
+            .enter()
+            .append("rect")
+            .attr("x", 600)
+            .attr("y", function (d, i) {
+                return 260 - i * (size + 5)
+            }) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("width", size)
+            .attr("height", size)
+            .style("fill", function (d) {
+                return color(d)
+            })
 
-      if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(k);
-      }
-    }
-  }
-
-  if (bundle.parent) {
-    parents = parents.concat(getParents(bundle.parent, id));
-  }
-
-  return parents;
-}
-
-function hmrApply(bundle, asset) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (modules[asset.id] || !bundle.parent) {
-    var fn = new Function('require', 'module', 'exports', asset.generated.js);
-    asset.isNew = !modules[asset.id];
-    modules[asset.id] = [fn, asset.deps];
-  } else if (bundle.parent) {
-    hmrApply(bundle.parent, asset);
-  }
-}
-
-function hmrAcceptCheck(bundle, id) {
-  var modules = bundle.modules;
-
-  if (!modules) {
-    return;
-  }
-
-  if (!modules[id] && bundle.parent) {
-    return hmrAcceptCheck(bundle.parent, id);
-  }
-
-  if (checkedAssets[id]) {
-    return;
-  }
-
-  checkedAssets[id] = true;
-  var cached = bundle.cache[id];
-  assetsToAccept.push([bundle, id]);
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    return true;
-  }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAcceptCheck(global.parcelRequire, id);
-  });
-}
-
-function hmrAcceptRun(bundle, id) {
-  var cached = bundle.cache[id];
-  bundle.hotData = {};
-
-  if (cached) {
-    cached.hot.data = bundle.hotData;
-  }
-
-  if (cached && cached.hot && cached.hot._disposeCallbacks.length) {
-    cached.hot._disposeCallbacks.forEach(function (cb) {
-      cb(bundle.hotData);
+        // Add one dot in the legend for each name.
+        svg.selectAll("mylabels")
+            .data(categories)
+            .enter()
+            .append("text")
+            .attr("x", 600 + size * 1.2)
+            .attr("y", function (d, i) {
+                return 260 - i * (size + 5) + (size / 2)
+            }) // 100 is where the first dot appears. 25 is the distance between dots
+            .style("fill", function (d) {
+                return color(d)
+            })
+            .text(function (d) {
+                return d
+            })
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle")
     });
-  }
-
-  delete bundle.cache[id];
-  bundle(id);
-  cached = bundle.cache[id];
-
-  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
-    cached.hot._acceptCallbacks.forEach(function (cb) {
-      cb();
-    });
-
-    return true;
-  }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/index.js.map
+
+reDraw(csvFile);
